@@ -12,18 +12,24 @@ function gameBoard() {
   }
 
   function dropMarker(row, column, player) {
-    if (board[row][column].getValue == 0) { //se ñ tiver marcada a celula 
+    if (board[row][column].getValue() == 0) {
       board[row][column].addMarker(player.marker);
     } else {
-      error = "a célula tá ocupada"
+      console.log("A célula tá ocupada");
     }
   }
 
   function getBoard() {
-    return board;
+    const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()));
+    return boardWithCellValues;
   }
 
-  return { dropMarker, getBoard };
+  function printBoard() {
+    const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()));
+    return console.log(boardWithCellValues);
+  };
+
+  return { dropMarker, getBoard, printBoard };
 }
 
 function Cell() {
@@ -42,9 +48,6 @@ function Cell() {
 
 function gameController() {
   const board = gameBoard();
-  const oi = board.getBoard();
-
-  console.log(oi);
 
   let player = [];
 
@@ -55,7 +58,7 @@ function gameController() {
   for (let i = 0; i < 2; i++) {
     var name = prompt("Player " + i + " Name:");
     var mark = prompt("Player " + i + " Mark:");
-    player[i] = createPlayer(name, mark)
+    player[i] = createPlayer(name, mark);
   }
 
   let activePlayer = player[1];
@@ -66,13 +69,38 @@ function gameController() {
   }
 
   function playRound() {
-    var place1 = prompt("que linha quer jogar?");
-    var place2 = prompt("que coluna quer jogar?");
-    board.dropMarker(place1, place2, getActualPlayer());
-    console.log(oi.getBoard[row][column].getValue);
-    console.log(oi + "depois do round");
+    var row = prompt("que linha quer jogar?");
+    var column = prompt("que coluna quer jogar?");
+    board.dropMarker(row, column, getActualPlayer());
   }
 
-  playRound();
-}
+  let gameGoing = true;
 
+  while (gameGoing) {
+    cellArray = board.getBoard();
+    
+    if (threeInRow(cellArray)) {
+      gameGoing = false;
+      console.log("Game Over");
+      console.log(cellArray);
+    } else{
+      playRound();
+      console.log(cellArray);
+    }
+  }
+
+  function threeInRow(cellArray) {
+    for (let i = 0; i < 3; i++) {
+      if ((cellArray[i][0] != 0) && (cellArray[i][0] == cellArray[i][1]) && (cellArray[i][1] == cellArray[i][2]))
+        return true
+      if ((cellArray[0][i] != 0) && (cellArray[0][i] == cellArray[1][i]) && (cellArray[1][i] == cellArray[2][i]))
+        return true
+    }
+    if ((cellArray[1][1] != 0) && (cellArray[0][0] == cellArray[1][1]) && (cellArray[1][1] == cellArray[2][2]))
+      return true
+    if ((cellArray[1][1] != 0) && (cellArray[0][2] == cellArray[1][1]) && (cellArray[1][1] == cellArray[2][0]))
+      return true
+    else
+      return false
+  }
+}
