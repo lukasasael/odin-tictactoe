@@ -3,7 +3,6 @@ function gameBoard() {
   const columns = 3;
   const board = [];
 
-  // Creating Board
   for (let i = 0; i < rows; i++) {
     board[i] = [];
     for (let j = 0; j < columns; j++) {
@@ -12,10 +11,13 @@ function gameBoard() {
   }
 
   function dropMarker(row, column, player) {
+    if (row > 2 || column > 2)
+      return console.error("Posição Inválida");
     if (board[row][column].getValue() == 0) {
       board[row][column].addMarker(player.marker);
     } else {
       console.log("A célula tá ocupada");
+      switchActualPlayer();
     }
   }
 
@@ -61,32 +63,31 @@ function gameController() {
     player[i] = createPlayer(name, mark);
   }
 
-  let activePlayer = player[1];
+  let activePlayer = player[0];
 
-  function getActualPlayer() {
+  function switchActualPlayer() {
     activePlayer = activePlayer === player[0] ? player[1] : player[0];
-    return activePlayer;
   }
 
   function playRound() {
     var row = prompt("que linha quer jogar?");
     var column = prompt("que coluna quer jogar?");
-    board.dropMarker(row, column, getActualPlayer());
+    board.dropMarker(row, column, activePlayer);
   }
 
   let gameGoing = true;
 
   while (gameGoing) {
     cellArray = board.getBoard();
-    
     if (threeInRow(cellArray)) {
       gameGoing = false;
-      console.log("Game Over");
-      console.log(cellArray);
-    } else{
+      switchActualPlayer();
+      console.log("Game Over " + activePlayer.name + " Won!");
+    } else {
       playRound();
-      console.log(cellArray);
     }
+    switchActualPlayer();
+    console.log(cellArray);
   }
 
   function threeInRow(cellArray) {
