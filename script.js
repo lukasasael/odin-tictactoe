@@ -50,6 +50,7 @@ function Cell() {
 
 function gameController() {
   const board = gameBoard();
+  displayRender(board.getBoard());
 
   let player = [];
 
@@ -83,11 +84,18 @@ function gameController() {
       gameGoing = false;
       switchActualPlayer();
       console.log("Game Over " + activePlayer.name + " Won!");
-    } else {
+      console.log(cellArray);
+      break
+    } if (itsATie(cellArray)) {
+      gameGoing = false;
+      console.log("Game Over Its a Tie!");
+      console.log(cellArray);
+      break
+    }
+    else {
       playRound();
     }
     switchActualPlayer();
-    console.log(cellArray);
   }
 
   function threeInRow(cellArray) {
@@ -104,4 +112,42 @@ function gameController() {
     else
       return false
   }
+
+  function itsATie(cellArray) {
+    let testArray = [];
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (cellArray[i][j] != 0)
+          testArray.push(1);
+      }
+    }
+    console.log(testArray)
+    if (testArray.length == 9)
+      return true
+    return false
+  }
+}
+
+function displayRender(board) {
+  board[0][1] = 'X';
+  board[1][1] = 'O';
+
+  const name1 = (document.getElementById("player-1-name")).value;
+  const marker1 = (document.getElementById("player-1-marker")).value;
+  const name2 = (document.getElementById("player-2-name")).value;
+  const marker2 = (document.getElementById("player-2-marker")).value;
+
+  const inputArea = document.getElementsByClassName("input-area");
+  //deletar inputarea
+  
+  const tictactoe = document.getElementsByClassName("tictactoe-area");
+
+  const node = document.createElement("div");
+  node.classList.add("node");
+  //node.textContent = "Glimpse Of Usssssssssss";
+  //node.innerHTML = `${Cell()}`;
+  for (let i = 0; i < 3; i++) {
+
+  }
+  tictactoe.appendChild(node);
 }

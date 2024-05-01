@@ -1,0 +1,92 @@
+* {
+    margin: 0%;
+    padding: 0%;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #E2DFD2;
+}
+
+.grid {
+    margin: 10%;
+    width: 100VW;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+.game-area {
+    grid-column: 2/3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.start-button {
+    padding: 3%;
+    background-color: #FCF5E5;
+    border: none;
+    border-radius: 10px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+.input-area {
+    margin-top: 30%;
+    height: 70%;
+    grid-column: 1/2;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    justify-content: center;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 10px;
+}
+
+.input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input>* {
+    margin-top: 2%;
+    width: 50%;
+    border: none;
+}
+
+input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+}
+
+.player-area {
+    margin-top: 30%;
+    padding-top: 10%;
+    height: 70%;
+    grid-column: 3/4;
+    display: grid;
+    grid-template-rows: 1fr 4fr 4fr;
+    align-items: center;
+    justify-content: center;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 10px;
+}
+
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
