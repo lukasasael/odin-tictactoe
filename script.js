@@ -10,7 +10,7 @@ function gameBoard() {
     }
   }
 
-  function dropMarker(row, column, player) {
+  function dropMarker(row, column, player, switchActualPlayer) {
     if (row > 2 || column > 2)
       return console.error("Posição Inválida");
     if (board[row][column].getValue() == "-") {
@@ -37,9 +37,10 @@ function gameBoard() {
 function Cell() {
   let value = "-";
 
-  const addMarker = (playerMarker) => {
+  const addMarker = (playerMarker, cell) => {
     value = playerMarker;
   }
+
   const getValue = () => value;
 
   return {
@@ -87,22 +88,19 @@ function gameController() {
     activePlayer = activePlayer === player[0] ? player[1] : player[0];
   }
 
-  displayRender(board.getBoard(), playRound);
+  displayRender(board.getBoard(), playRound, activePlayer);
 
   function playRound(i, j) {
-    board.dropMarker(i, j, activePlayer);
+    board.dropMarker(i, j, activePlayer, switchActualPlayer);
     cellArray = board.getBoard();
     if (threeInRow(cellArray)) {
-      gameGoing = false;
       switchActualPlayer();
       console.log("Game Over " + activePlayer.name + " Won!");
-      console.log(cellArray);
     } if (itsATie(cellArray)) {
-      gameGoing = false;
       console.log("Game Over Its a Tie!");
-      console.log(cellArray);
     }
     switchActualPlayer();
+    updateDisplay(cellArray);
   }
 
   function threeInRow(cellArray) {
@@ -133,13 +131,10 @@ function gameController() {
       return true
     return false
   }
+
 }
 
-function displayRender(board, playRound) {
-  board[0][1] = 'X';
-  board[1][1] = 'O';
-  console.log(board);
-
+function displayRender(board, playRound, activePlayer) {
   const tictactoe = document.getElementById("tictactoe-area");
   const cell = [];
 
@@ -148,8 +143,25 @@ function displayRender(board, playRound) {
       cell[i + j] = document.createElement("div");
       cell[i + j].classList.add("cell");
       cell[i + j].innerHTML = board[i][j];
-      cell[i + j].onclick = playRound(i, j, activePlayer);
+      cell[i + j].addEventListener('click', () => {
+        playRound(i, j, activePlayer);
+      });
       tictactoe.appendChild(cell[i + j]);
     }
   }
+}
+
+function updateDisplay(cellArray) {
+  const tictactoe = document.getElementById("tictactoe-area");
+  tictactoe.getElementsByTagName('div')[0].innerHTML = cellArray[0][0];
+  //tictactoe.getElementsByTagName('div')[0].style.color = ;
+
+  tictactoe.getElementsByTagName('div')[1].innerHTML = cellArray[0][1];
+  tictactoe.getElementsByTagName('div')[2].innerHTML = cellArray[0][2];
+  tictactoe.getElementsByTagName('div')[3].innerHTML = cellArray[1][0];
+  tictactoe.getElementsByTagName('div')[4].innerHTML = cellArray[1][1];
+  tictactoe.getElementsByTagName('div')[5].innerHTML = cellArray[1][2];
+  tictactoe.getElementsByTagName('div')[6].innerHTML = cellArray[2][0];
+  tictactoe.getElementsByTagName('div')[7].innerHTML = cellArray[2][1];
+  tictactoe.getElementsByTagName('div')[8].innerHTML = cellArray[2][2];
 }
