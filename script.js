@@ -98,7 +98,6 @@ function gameController() {
     cellArray = board.getBoard();
     updateDisplay(cellArray, player);
     if (threeInRow(cellArray)) {
-      //alert("Game Over " + activePlayer.name + " Won!");
       if (activePlayer.name == name1) {
         p1WinCounter++;
         document.getElementById("score1").innerHTML = "score:" + p1WinCounter;
@@ -111,6 +110,7 @@ function gameController() {
       }
       displayRestart(activePlayer.name, board.getBoard(), playRound, activePlayer);
     } if (itsATie(cellArray, board.getBoard())) {
+      board = gameBoard();
       displayRestart(0, board.getBoard(), playRound, activePlayer);
     }
     switchActualPlayer();
@@ -180,10 +180,6 @@ function updateDisplay(cellArray, player) {
 
 function displayRestart(playerName, getBoard, playRound, activePlayer) {
   const displayArea = document.getElementById("tictactoe-area");
-  /*displayArea.style.display = "flex";
-  displayArea.style.justifyContent = "center";
-  displayArea.style.alignItems = "center";
-  displayArea.style.flexDirection = "column";*/
   if (playerName == 0) {
     displayArea.innerHTML = "Its a Tie!";
   }
