@@ -50,12 +50,12 @@ function Cell() {
 }
 
 function gameController() {
-  const board = gameBoard();
+  let board = gameBoard();
 
   let player = [];
 
-  function createPlayer(name, marker) {
-    return { name, marker };
+  function createPlayer(name, color, marker) {
+    return { name, color, marker };
   }
 
   const name1 = (document.getElementById("player-1-name")).value;
@@ -64,7 +64,6 @@ function gameController() {
   const marker2 = (document.getElementById("player-2-marker")).value;
 
   const inputArea = document.getElementById("input-area");
-
 
   document.getElementById("name1").innerHTML = (document.getElementById("player-1-name")).value;
   document.getElementById("marker1").innerHTML = "X";
@@ -75,12 +74,14 @@ function gameController() {
   document.getElementById("marker2").innerHTML = "O";
   document.getElementById("marker2").style.color = marker2;
   newMarker2 = document.getElementById("marker2").innerHTML;
-  //Consertar essa merda aí pra printar colorido no tictactoe-area
 
-  inputArea.remove();
+  inputArea.innerHTML = "";
 
-  player[0] = createPlayer(name1, newMarker1);
-  player[1] = createPlayer(name2, newMarker2);
+  const playerArea = document.getElementById("player-area");
+  playerArea.style.visibility = "visible";
+
+  player[0] = createPlayer(name1, marker1, newMarker1);
+  player[1] = createPlayer(name2, marker2, newMarker2);
 
   let activePlayer = player[0];
 
@@ -90,17 +91,29 @@ function gameController() {
 
   displayRender(board.getBoard(), playRound, activePlayer);
 
+  let p1WinCounter = 0, p2WinCounter = 0;
+
   function playRound(i, j) {
     board.dropMarker(i, j, activePlayer, switchActualPlayer);
     cellArray = board.getBoard();
+    updateDisplay(cellArray, player);
     if (threeInRow(cellArray)) {
-      switchActualPlayer();
-      console.log("Game Over " + activePlayer.name + " Won!");
-    } if (itsATie(cellArray)) {
-      console.log("Game Over Its a Tie!");
+      //alert("Game Over " + activePlayer.name + " Won!");
+      if (activePlayer.name == name1) {
+        p1WinCounter++;
+        document.getElementById("score1").innerHTML = "score:" + p1WinCounter;
+        board = gameBoard();
+      }
+      else {
+        p2WinCounter++;
+        document.getElementById("score2").innerHTML = "score:" + p2WinCounter;
+        board = gameBoard();
+      }
+      displayRestart(activePlayer.name, board.getBoard(), playRound, activePlayer);
+    } if (itsATie(cellArray, board.getBoard())) {
+      displayRestart(0, board.getBoard(), playRound, activePlayer);
     }
     switchActualPlayer();
-    updateDisplay(cellArray);
   }
 
   function threeInRow(cellArray) {
@@ -126,7 +139,6 @@ function gameController() {
           testArray.push(1);
       }
     }
-    //console.log(testArray)
     if (testArray.length == 9)
       return true
     return false
@@ -151,17 +163,41 @@ function displayRender(board, playRound, activePlayer) {
   }
 }
 
-function updateDisplay(cellArray) {
+function updateDisplay(cellArray, player) {
   const tictactoe = document.getElementById("tictactoe-area");
-  tictactoe.getElementsByTagName('div')[0].innerHTML = cellArray[0][0];
-  //tictactoe.getElementsByTagName('div')[0].style.color = ;
+  for (let i = 0, j = 0, k = 0; i < 9, j < 3; i++, k++) {
+    tictactoe.getElementsByTagName('div')[i].innerHTML = cellArray[j][k];
+    if (cellArray[j][k] == player[0].marker)
+      tictactoe.getElementsByTagName('div')[i].style.color = player[0].color;
+    else if (cellArray[j][k] == player[1].marker)
+      tictactoe.getElementsByTagName('div')[i].style.color = player[1].color;
+    if (k == 2) {
+      k = -1;
+      j++;
+    }
+  }
+}
 
-  tictactoe.getElementsByTagName('div')[1].innerHTML = cellArray[0][1];
-  tictactoe.getElementsByTagName('div')[2].innerHTML = cellArray[0][2];
-  tictactoe.getElementsByTagName('div')[3].innerHTML = cellArray[1][0];
-  tictactoe.getElementsByTagName('div')[4].innerHTML = cellArray[1][1];
-  tictactoe.getElementsByTagName('div')[5].innerHTML = cellArray[1][2];
-  tictactoe.getElementsByTagName('div')[6].innerHTML = cellArray[2][0];
-  tictactoe.getElementsByTagName('div')[7].innerHTML = cellArray[2][1];
-  tictactoe.getElementsByTagName('div')[8].innerHTML = cellArray[2][2];
+function displayRestart(playerName, getBoard, playRound, activePlayer) {
+  const displayArea = document.getElementById("tictactoe-area");
+  /*displayArea.style.display = "flex";
+  displayArea.style.justifyContent = "center";
+  displayArea.style.alignItems = "center";
+  displayArea.style.flexDirection = "column";*/
+  if (playerName == 0) {
+    displayArea.innerHTML = "Its a Tie!";
+  }
+  else {
+    displayArea.innerHTML = playerName + " has won this match!";
+  }
+  let btn = document.createElement("button");
+  btn.innerText = "Restart";
+  btn.classList.add("start-button");
+  let board = getBoard;
+  btn.addEventListener('click', () => {
+    displayArea.innerHTML = "";
+
+    displayRender(getBoard, playRound, activePlayer);
+  });
+  displayArea.appendChild(btn);
 }
